@@ -47,6 +47,12 @@ let bulmahead = (id, idMenu, api, onSelect, delay, minLen = 2) => {
     })
   }
   input.addEventListener('keyup', debounce(handleApi, delay))
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      input.value = ''
+      e.preventDefault()
+    }
+  })
 }
 
 export default bulmahead
