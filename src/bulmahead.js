@@ -42,18 +42,17 @@ let bulmahead = (id, idMenu, api, onSelect, delay, minLen = 2) => {
       }
     })
   }
-  input.addEventListener('keyup', debounce(handleApi, delay))
+  input.addEventListener('input', debounce(handleApi, delay))
+  input.addEventListener('focusout', function () {
+    menuEl.style.display = 'none'
+  })
+  input.addEventListener('focusin', handleApi)
   input.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       input.value = ''
       e.preventDefault()
     }
   })
-  input.addEventListener('input', debounce(handleApi, delay))
-  input.addEventListener('focusout', function () {
-    menuEl.style.display = 'none'
-  })
-  input.addEventListener('focusin', handleApi)
 }
 
 export default bulmahead
