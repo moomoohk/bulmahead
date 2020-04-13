@@ -48,9 +48,7 @@ const bulmahead = (id, idMenu, api, onSelect, delay, minLen = 2) => {
       menuEl.style.display = 'none'
     }
   })
-  input.addEventListener('focusin', e => {
-    handleApi(e)
-  })
+  input.addEventListener('focusin', handleApi)
   input.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       input.value = ''
