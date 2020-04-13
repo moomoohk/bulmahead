@@ -1,14 +1,14 @@
 import debounce from 'lodash/debounce'
 
 const bulmahead = (id, idMenu, api, onSelect, delay, minLen = 2) => {
-  const input = document.getElementById(id)
-  const menuEl = document.getElementById(idMenu)
-  menuEl.innerHTML = '<div class="dropdown-content"></div>'
+  let input = document.getElementById(id)
+  let menuEl = document.getElementById(idMenu)
+  let contentEl = document.createElement('div')
+  contentEl.classList.add('dropdown-content')
+  menuEl.appendChild(contentEl)
+  let selected = null
 
-  const setValue = e => {
-    e.preventDefault()
-    var label = e.target.text
-    var value = e.target.dataset.value
+  const setValue = (label, value) => {
     input.value = label
     menuEl.style.display = 'none'
     if (onSelect) {
@@ -20,7 +20,8 @@ const bulmahead = (id, idMenu, api, onSelect, delay, minLen = 2) => {
   const handleApi = e => {
     const value = e.target.value
     menuEl.style.display = 'none'
-    menuEl.innerHTML = '<div class="dropdown-content"></div>'
+    contentEl.innerHTML = ''
+    selected = null
     if (value.length <= minLen) {
       return
     }
@@ -31,14 +32,20 @@ const bulmahead = (id, idMenu, api, onSelect, delay, minLen = 2) => {
         a.classList.add('dropdown-item')
         a.innerHTML = label
         a.dataset.value = value
-        a.addEventListener('click', setValue)
+        a.addEventListener('click', function (e) {
+          setValue(label, value)
+        })
         return a
       })
-      suggestionsEl.map(suggEl => {
-        menuEl.childNodes[0].appendChild(suggEl)
-      })
       if (suggestions.length > 0) {
-        menuEl.style.display = 'block'
+        suggestionsEl.map(suggEl => {
+          contentEl.appendChild(suggEl)
+        })
+        if (suggestions.length === 1 && suggestions[0].label === value) {
+          selected = suggestionsEl[0]
+        } else {
+          menuEl.style.display = 'block'
+        }
       }
     })
   }
@@ -51,8 +58,44 @@ const bulmahead = (id, idMenu, api, onSelect, delay, minLen = 2) => {
   input.addEventListener('focusin', handleApi)
   input.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
-      input.value = ''
       e.preventDefault()
+      input.value = ''
+      handleApi(e)
+      return
+    }
+    if (e.key === 'Enter') {
+      setValue(selected.text, selected.dataset.value)
+      return
+    }
+
+    if (contentEl.children.length === 0) {
+      return
+    }
+    if (selected !== null) {
+      selected.classList.remove('is-active')
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+
+      if (selected === null) {
+        selected = contentEl.firstChild
+      } else if (selected.nextSibling !== null) {
+        selected = selected.nextSibling
+      }
+    }
+    if (e.key === 'ArrowUp') {
+      e.preventDefault()
+
+      if (selected === null) {
+        selected = contentEl.lastChild
+      } else if (selected.previousSibling !== null) {
+        selected = selected.previousSibling
+      } else {
+        selected = null
+      }
+    }
+    if (selected !== null) {
+      selected.classList.add('is-active')
     }
   })
 }
