@@ -63,7 +63,7 @@ const bulmahead = (id, idMenu, api, onSelect, delay, minLen = 2) => {
       handleApi(e)
       return
     }
-    if (e.key === 'Enter') {
+    if (selected !== null && e.key === 'Enter') {
       setValue(selected.text, selected.dataset.value)
       return
     }
