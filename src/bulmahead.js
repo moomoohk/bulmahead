@@ -64,8 +64,8 @@ const bulmahead = (id, idMenu, api, onSelect, delay, minLen = 2, preventEnter = 
       return
     }
     if (selected !== null && e.key === 'Enter') {
-      if (preventEnter) {
-        e.preventDefault()
+      if (preventEnter && menuEl.style.display !== 'none') {
+          e.preventDefault()
       }
       setValue(selected.text, selected.dataset.value)
       return
