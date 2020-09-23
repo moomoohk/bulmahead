@@ -1,9 +1,9 @@
 import debounce from 'lodash/debounce'
 
-const bulmahead = (id, idMenu, api, onSelect, delay, minLen = 2) => {
-  let input = document.getElementById(id)
-  let menuEl = document.getElementById(idMenu)
-  let contentEl = document.createElement('div')
+const bulmahead = (id, idMenu, api, onSelect, delay, minLen = 2, preventEnter = false) => {
+  const input = document.getElementById(id)
+  const menuEl = document.getElementById(idMenu)
+  const contentEl = document.createElement('div')
   contentEl.classList.add('dropdown-content')
   menuEl.appendChild(contentEl)
   let selected = null
@@ -64,6 +64,9 @@ const bulmahead = (id, idMenu, api, onSelect, delay, minLen = 2) => {
       return
     }
     if (selected !== null && e.key === 'Enter') {
+      if (preventEnter) {
+        e.preventDefault()
+      }
       setValue(selected.text, selected.dataset.value)
       return
     }
